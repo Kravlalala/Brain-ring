@@ -1,10 +1,5 @@
 #include "tones.h"
-
-/* Diode pins  */
-#define VD1 A0
-#define VD2 A1
-#define VD3 A2
-#define VD4 A3
+#include "pins.h"
 
 /* Function for playing melody  */
 void play_melody (int);

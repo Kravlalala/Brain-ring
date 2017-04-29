@@ -1,10 +1,6 @@
 #include "diagnostic.h"
-#define PLAYER1 2
-#define PLAYER2 3
-#define PLAYER3 4
-#define PLAYER4 5
-#define MASTER  6
-#define SPEAKER A5
+
+/* Bit mask of active buttons  */
 #define PLAYER1_FIRST  1
 #define PLAYER2_FIRST  1 << 1
 #define PLAYER3_FIRST  1 << 2

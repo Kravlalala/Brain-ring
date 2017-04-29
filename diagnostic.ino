@@ -20,11 +20,12 @@ void diodes_on(){
 *  @speaker_pin - pin number, where speaker is connected
 */
 void play_melody (int speaker_pin){
- int melody[] = { NOTE_C4, NOTE_G3, NOTE_G3, 
-                  NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4 };
- int noteDurations[] = { 4, 8, 8, 4, 4, 4, 4, 4 };
+ int melody[] = { NOTE_A2, NOTE_G2, NOTE_FS2, NOTE_E2, NOTE_FS2, 
+                  NOTE_E2, NOTE_D2, NOTE_B1, NOTE_D2, NOTE_FS2};
+ int noteDurations[] = { 4, 4, 8, 4, 4, 8, 4, 8, 4, 8 };
   
   for (int thisNote = 0; thisNote < 8; thisNote++) {
+    /* Start diodes lighting */
     diodes_on ();
       
     // to calculate the note duration, take one second
@@ -36,9 +37,11 @@ void play_melody (int speaker_pin){
     // to distinguish the notes, set a minimum time between them.
     // the note's duration + 30% seems to work well:
     int pauseBetweenNotes = noteDuration * 1.30;
-    
+
+    /* Stop diodes lighting */
     diodes_off();
     delay(pauseBetweenNotes);
+    
     // stop the tone playing:
     noTone(speaker_pin);
   }

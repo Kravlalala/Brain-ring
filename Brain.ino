@@ -6,9 +6,10 @@
 #define PLAYER3_FIRST  1 << 2
 #define PLAYER4_FIRST  1 << 3
 
+int wait_action ();
+int detect_pushed_button ();
 void answer_wait (int);
-int check_button_pushed ();
-int read_buttons ();
+void signalize (int);
 
 /* Pins preinitialization and hardware diagnostics  */
 void setup() {
@@ -30,6 +31,8 @@ void setup() {
   analogWrite (VD2, 255);
   analogWrite (VD3, 255);
   analogWrite (VD4, 255);
+
+  /* Set speaker as output */
   pinMode (SPEAKER, OUTPUT);
 
   /* Speaker and diodes testing */
@@ -39,48 +42,60 @@ void setup() {
 /* Main loop function  */
 void loop() {
   int buttons_state_mask = 0;
-  int pressed_button = 0;
+  int current_led = 0;
+
+  buttons_state_mask = wait action();
+  current_led = detect_pushed_button(buttons_state_mask);
   
-  buttons_state_mask = read_buttons();
-  pressed_button = check_button_pushed(buttons_state_mask);
-  
-  if (pressed_button != 0)
-    answer_wait (pressed_button);
+  if (current_led != 0){
+    signalize (current_led);
+    answer_wait (current_led);
+  }
 }
 
-/* Read current buttons state. Returns state mask, where
-* each bit is current player's button state, as example: 
-* 0001 - player 1 pushed the button
-* 0010 - player 2 pushed the button 
-* 0100 - player 3 pushed the button
-* 1000 - player 4 pushed the button 
+/* Read current buttons state. Returns state mask, when one of buttons 
+*  has been pushed.
+*  Each bit of state_mask is a current player's button state, as example: 
+*  0001 - player 1 pushed the button
+*  0010 - player 2 pushed the button 
+*  0100 - player 3 pushed the button
+*  1000 - player 4 pushed the button 
 */
-int read_buttons (){
+int wait_action (){
   int state_mask = 0;
-  int player1_state = digitalRead (PLAYER1);
-  int player2_state = digitalRead (PLAYER2);
-  int player3_state = digitalRead (PLAYER3);
-  int player4_state = digitalRead (PLAYER4);
-  
-  if (player1_state == HIGH)
-    state_mask = state_mask | PLAYER1_FIRST;
-  
-  if (player2_state == HIGH)
-    state_mask = state_mask | PLAYER2_FIRST;
-  
-  if (player3_state == HIGH)
-    state_mask = state_mask | PLAYER3_FIRST;
-  
-  if (player4_state == HIGH)
-    state_mask = state_mask | PLAYER4_FIRST;
+  int player1_state = LOW;
+  int player2_state = LOW;
+  int player3_state = LOW;
+  int player4_state = LOW;
+   
+  while (true){
+    player1_state = digitalRead (PLAYER1);
+    player2_state = digitalRead (PLAYER2);
+    player3_state = digitalRead (PLAYER3);
+    player4_state = digitalRead (PLAYER4);
     
-   return state_mask;
+    if (player1_state == HIGH){
+      state_mask = state_mask | PLAYER1_FIRST;
+
+    if (player2_state == HIGH)
+      state_mask = state_mask | PLAYER2_FIRST;
+  
+    if (player3_state == HIGH)
+      state_mask = state_mask | PLAYER3_FIRST;
+  
+    if (player4_state == HIGH)
+      state_mask = state_mask | PLAYER4_FIRST;
+
+    if (state_mask != 0)
+      break;
+  }
+  return state_mask;
 }
 
 /* Identify wich button has been pushed. Returns number of VD, 
 * corresponds to pushed button. 
 */
-int check_button_pushed (int state_mask){
+int detect_pushed_button (int state_mask){
   if (state_mask == PLAYER1_FIRST)
     return VD1;
   if (state_mask == PLAYER2_FIRST)
@@ -92,13 +107,22 @@ int check_button_pushed (int state_mask){
   return 0;   
 }
 
-/* Sycle for waiting answer  */
-void answer_wait (int diode_pin){
-  int master_state = LOW;
+/* Led diode, and beep  
+*  @diode_pin - pin, correspinding to the pushed button
+*/
+void signalize (int diode_pin){
   tone (SPEAKER, 400);
   delay(500);
   noTone (SPEAKER);
   analogWrite (diode_pin, 0);
+}
+
+/* Sycle for waiting answer 
+*  @diode_pin - currently active diode
+*/
+void answer_wait (int diode_pin){
+  int master_state = LOW;
+  
   while (true){
     master_state = digitalRead (MASTER); 
     if (master_state == HIGH){

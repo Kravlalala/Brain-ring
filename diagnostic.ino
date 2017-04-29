@@ -22,7 +22,7 @@ void diodes_on(){
 void play_melody (int speaker_pin){
  int melody[] = { NOTE_A2, NOTE_G2, NOTE_FS2, NOTE_E2, NOTE_FS2, 
                   NOTE_E2, NOTE_D2, NOTE_B1, NOTE_D2, NOTE_FS2};
- int noteDurations[] = { 4, 4, 8, 4, 4, 8, 4, 8, 4, 8 };
+ int noteDurations[] = { 8, 8, 2, 8, 8, 4, 8, 4, 8, 2 };
   
   for (int thisNote = 0; thisNote < 8; thisNote++) {
     /* Start diodes lighting */

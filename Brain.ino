@@ -7,7 +7,7 @@
 #define PLAYER4_FIRST  1 << 3
 
 int wait_action ();
-int detect_pushed_button ();
+int detect_pushed_button (int);
 void answer_wait (int);
 void signalize (int);
 
@@ -44,7 +44,7 @@ void loop() {
   int buttons_state_mask = 0;
   int current_led = 0;
 
-  buttons_state_mask = wait action();
+  buttons_state_mask = wait_action();
   current_led = detect_pushed_button(buttons_state_mask);
   
   if (current_led != 0){
@@ -74,7 +74,7 @@ int wait_action (){
     player3_state = digitalRead (PLAYER3);
     player4_state = digitalRead (PLAYER4);
     
-    if (player1_state == HIGH){
+    if (player1_state == HIGH)
       state_mask = state_mask | PLAYER1_FIRST;
 
     if (player2_state == HIGH)

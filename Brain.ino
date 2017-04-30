@@ -37,6 +37,9 @@ void setup() {
   /* Set speaker as output */
   pinMode (SPEAKER, OUTPUT);
 
+  /* Open serial port for debug */
+  Serial.begin (9600);
+  
   /* Speaker and diodes testing */
   play_melody(SPEAKER);
 }
@@ -98,14 +101,24 @@ int wait_action () {
   corresponds to pushed button.
 */
 int detect_pushed_button (int state_mask) {
-  if (state_mask == PLAYER1_FIRST)
+  if (state_mask == PLAYER1_FIRST){
+    Serial.println ("Button on pin 2 has been pushed");
     return VD1;
-  if (state_mask == PLAYER2_FIRST)
+  }
+  if (state_mask == PLAYER2_FIRST){
+    Serial.println ("Button on pin 3 has been pushed");
     return VD2;
-  if (state_mask == PLAYER3_FIRST)
+  }
+  if (state_mask == PLAYER3_FIRST){
+    Serial.println ("Button on pin 4 has been pushed");
     return VD3;
-  if (state_mask == PLAYER4_FIRST)
+  }
+    
+  if (state_mask == PLAYER4_FIRST){
+    Serial.println ("Button on pin 5 has been pushed");
     return VD4;
+  }
+  Serial.println ("No button has been pushed");  
   return 0;
 }
 
@@ -128,6 +141,7 @@ void answer_wait (int diode_pin) {
   while (true) {
     master_state = digitalRead (MASTER);
     if (master_state == HIGH) {
+      Serial.println ("Master state is HIGH");
       analogWrite (diode_pin, 255);
       break;
     }
